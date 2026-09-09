@@ -35,7 +35,7 @@
     <div class="flex flex-1 overflow-hidden">
         
         <!-- 좌측 사이드바 카테고리 -->
-        <nav class="w-72 bg-white dark:bg-gray-800 shadow-lg shrink-0 flex flex-col justify-between overflow-y-auto">
+        <nav class="w-72 bg-white dark:bg-gray-800 shadow-lg shrink-0 flex flex-col justify-between overflow-y-auto z-20">
             <div>
                 <div class="p-4 border-b dark:border-gray-700">
                     <h2 class="text-lg font-bold">실습 카테고리</h2>
@@ -53,10 +53,9 @@
             
             <!-- 하단 데이터서버 바로가기 -->
             <div class="p-4 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-                <a href="https://docs.google.com/spreadsheets/d/1ORD0SmK4-cMvZHqWJFR-apcv6JTTCobFp2qK9qaeNHI/edit?gid=0#gid=0" target="_blank" class="block text-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-3 rounded-lg text-sm transition-colors shadow-sm">
-                    <span class="font-bold text-gray-800 dark:text-gray-200">📊 데이터서버 바로가기</span><br>
-                    <span class="text-xs text-red-500 font-bold mt-1 inline-block">인증번호: <span id="dbAuthCode">로딩중...</span></span>
-                </a>
+                <button onclick="openAuthModal()" class="w-full text-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-3 rounded-lg text-sm transition-colors shadow-sm cursor-pointer">
+                    <span class="font-bold text-gray-800 dark:text-gray-200">📊 데이터서버 바로가기</span>
+                </button>
             </div>
         </nav>
 
@@ -66,7 +65,7 @@
             <!-- 인트로 -->
             <section id="intro" class="content-section h-full flex flex-col justify-center max-w-4xl mx-auto">
                 <h1 class="text-4xl font-extrabold mb-6 text-center">
-                    <span id="targetAudience" class="text-blue-600 dark:text-blue-400 transition-opacity">데이터 불러오는 중...</span> 선생님, 환영합니다!
+                    <span id="targetAudience" class="text-blue-600 dark:text-blue-400 transition-opacity">데이터 불러오는 중...</span>, 환영합니다!
                 </h1>
                 <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border-l-4 border-blue-500">
                     <h3 class="text-2xl font-bold mb-4">💡 이 대시보드 활용법</h3>
@@ -175,6 +174,20 @@
         </div>
     </div>
 
+    <!-- 인증번호 입력 모달 -->
+    <div id="authModal" class="fixed inset-0 bg-black/80 hidden flex-col items-center justify-center z-50 transition-opacity" onclick="closeAuthModal()">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl text-center max-w-sm w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+            <h3 class="text-xl font-bold mb-2 text-gray-800 dark:text-white">데이터서버 접근</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400 mb-6">접근을 위해 인증번호를 입력해주세요.</p>
+            <input type="password" id="authInput" class="w-full border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 mb-2 dark:bg-gray-700 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="인증번호 입력" onkeypress="if(event.key === 'Enter') verifyAuth()">
+            <p id="authError" class="text-red-500 text-sm hidden mb-4">인증번호가 일치하지 않습니다.</p>
+            <div class="flex gap-2 mt-4">
+                <button onclick="closeAuthModal()" class="flex-1 bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white px-4 py-3 rounded-lg font-bold transition-colors">취소</button>
+                <button onclick="verifyAuth()" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-bold transition-colors">확인</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // === [화면 제어 스크립트] ===
         function showContent(sectionId, element) {
@@ -218,6 +231,33 @@
             document.getElementById('qrModal').classList.remove('flex');
         }
 
+        // === [데이터서버 인증 모달 제어 스크립트] ===
+        let serverAuthCode = "";
+        const SHEET_URL = "https://docs.google.com/spreadsheets/d/1ORD0SmK4-cMvZHqWJFR-apcv6JTTCobFp2qK9qaeNHI/edit?gid=0#gid=0";
+
+        function openAuthModal() {
+            document.getElementById('authInput').value = '';
+            document.getElementById('authError').classList.add('hidden');
+            document.getElementById('authModal').classList.remove('hidden');
+            document.getElementById('authModal').classList.add('flex');
+            setTimeout(() => document.getElementById('authInput').focus(), 100);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+            document.getElementById('authModal').classList.remove('flex');
+        }
+
+        function verifyAuth() {
+            const input = document.getElementById('authInput').value;
+            if (input === serverAuthCode) {
+                closeAuthModal();
+                window.open(SHEET_URL, '_blank');
+            } else {
+                document.getElementById('authError').classList.remove('hidden');
+            }
+        }
+
         // === [구글 시트 데이터베이스 연동 스크립트] ===
         const SHEET_ID = '1ORD0SmK4-cMvZHqWJFR-apcv6JTTCobFp2qK9qaeNHI';
         
@@ -259,10 +299,10 @@
             // 1. '설정' 시트 반영
             const settingsData = await fetchSheetData('설정');
             if (settingsData && settingsData.length > 1) { // 1행(index 0)은 헤더, 2행(index 1)이 데이터
-                const authCode = settingsData[1][0]; // A2
-                const targetAudience = settingsData[1][1]; // B2
+                serverAuthCode = settingsData[1][0]; // A2 (인증번호를 변수에만 저장, 화면 노출 안 함)
+                const targetAudience = settingsData[1][1]; // B2 (대상 텍스트)
                 
-                document.getElementById('dbAuthCode').innerText = authCode;
+                // "군위고등학교 선생님" 처럼 전체 문구가 입력되어 있다고 가정하고 그대로 렌더링
                 document.getElementById('targetAudience').innerText = targetAudience;
             }
 
