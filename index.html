@@ -35,18 +35,29 @@
     <div class="flex flex-1 overflow-hidden">
         
         <!-- 좌측 사이드바 카테고리 -->
-        <nav class="w-72 bg-white dark:bg-gray-800 shadow-lg shrink-0 flex flex-col overflow-y-auto">
-            <div class="p-4 border-b dark:border-gray-700">
-                <h2 class="text-lg font-bold">실습 카테고리</h2>
-                <p class="text-xs text-gray-500 dark:text-gray-400">순서대로 클릭하며 따라해 보세요.</p>
+        <nav class="w-72 bg-white dark:bg-gray-800 shadow-lg shrink-0 flex flex-col justify-between overflow-y-auto">
+            <div>
+                <div class="p-4 border-b dark:border-gray-700">
+                    <h2 class="text-lg font-bold">실습 카테고리</h2>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">순서대로 클릭하며 따라해 보세요.</p>
+                </div>
+                <ul class="flex flex-col p-2 space-y-1" id="menuList">
+                    <li class="menu-item active p-3 rounded-md" onclick="showContent('intro', this)">👋 연수 안내 및 준비</li>
+                    <li class="menu-item p-3 rounded-md" onclick="showContent('mod1', this)">1️⃣ [설정] 환경 세팅하기</li>
+                    <li class="menu-item p-3 rounded-md" onclick="showContent('mod2', this)">2️⃣ [만들기] 수업/퀴즈 제작</li>
+                    <li class="menu-item p-3 rounded-md" onclick="showContent('mod3', this)">3️⃣ [평가] 검사 및 피드백</li>
+                    <li class="menu-item p-3 rounded-md" onclick="showContent('mod4', this)">4️⃣ [부스트] 학생 활동 제작 ★</li>
+                    <li class="menu-item p-3 rounded-md mt-4 border-t dark:border-gray-700" onclick="showContent('ref-sites', this)">🔗 참고 사이트 모음</li>
+                </ul>
             </div>
-            <ul class="flex flex-col p-2 space-y-1" id="menuList">
-                <li class="menu-item active p-3 rounded-md" onclick="showContent('intro', this)">👋 연수 안내 및 준비</li>
-                <li class="menu-item p-3 rounded-md" onclick="showContent('mod1', this)">1️⃣ [설정] 환경 세팅하기</li>
-                <li class="menu-item p-3 rounded-md" onclick="showContent('mod2', this)">2️⃣ [만들기] 수업/퀴즈 제작</li>
-                <li class="menu-item p-3 rounded-md" onclick="showContent('mod3', this)">3️⃣ [평가] 검사 및 피드백</li>
-                <li class="menu-item p-3 rounded-md" onclick="showContent('mod4', this)">4️⃣ [부스트] 학생 활동 제작 ★</li>
-            </ul>
+            
+            <!-- 하단 데이터서버 바로가기 -->
+            <div class="p-4 border-t dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
+                <a href="https://docs.google.com/spreadsheets/d/1ORD0SmK4-cMvZHqWJFR-apcv6JTTCobFp2qK9qaeNHI/edit?gid=0#gid=0" target="_blank" class="block text-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 p-3 rounded-lg text-sm transition-colors shadow-sm">
+                    <span class="font-bold text-gray-800 dark:text-gray-200">📊 데이터서버 바로가기</span><br>
+                    <span class="text-xs text-red-500 font-bold mt-1 inline-block">인증번호: <span id="dbAuthCode">로딩중...</span></span>
+                </a>
+            </div>
         </nav>
 
         <!-- 우측 실습 콘텐츠 영역 (전체화면 꽉 차게) -->
@@ -54,7 +65,9 @@
             
             <!-- 인트로 -->
             <section id="intro" class="content-section h-full flex flex-col justify-center max-w-4xl mx-auto">
-                <h1 class="text-4xl font-extrabold mb-6 text-center">한양과학기술고등학교 선생님, 환영합니다!</h1>
+                <h1 class="text-4xl font-extrabold mb-6 text-center">
+                    <span id="targetAudience" class="text-blue-600 dark:text-blue-400 transition-opacity">데이터 불러오는 중...</span> 선생님, 환영합니다!
+                </h1>
                 <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border-l-4 border-blue-500">
                     <h3 class="text-2xl font-bold mb-4">💡 이 대시보드 활용법</h3>
                     <ul class="list-disc pl-6 space-y-3 text-lg">
@@ -122,182 +135,48 @@
                 </div>
             </section>
 
-            <!-- 모듈 4 (Brisk Boost 활동 유형 완벽 반영) -->
+            <!-- 모듈 4 -->
             <section id="mod4" class="content-section hidden max-w-5xl mx-auto pb-10">
                 <h2 class="text-3xl font-bold mb-2 text-blue-600 dark:text-blue-400">모듈 4: [부스트] 학생 참여형 활동지 만들기</h2>
-                <p class="mb-6 text-gray-600 dark:text-gray-300 text-lg">정적인 웹 자료나 영상을 학생들이 직접 참여하는 대화형 워크스페이스로 변환합니다. 수업 목적에 맞는 활동 유형을 선택해 보세요.</p>
-                
-                <div class="bg-gray-100 dark:bg-gray-700 p-6 rounded-xl shadow-inner mb-6">
-                    <h3 class="text-2xl font-bold mb-6 flex items-center">
-                        <span class="bg-blue-600 text-white px-3 py-1 rounded-md text-sm mr-3">Brisk Boost</span> 활동 유형 상세 가이드
-                    </h3>
-                    
-                    <!-- Engage (참여) -->
-                    <div class="mb-8">
-                        <h4 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-l-4 border-blue-500 pl-3">Engage (참여 및 동기부발)</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- 튜터 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-blue-500 text-white rounded p-1.5 mr-2">📘</div>
-                                    <h5 class="font-bold text-lg">튜터</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"학생 학습을 위한 맞춤형 지원"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: AI가 1:1 교사가 되어 정답을 바로 주지 않고 질문과 힌트를 통해 학생 스스로 깨우치도록 유도할 때 사용합니다.</p>
-                            </div>
-                            <!-- 화이트보드 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 relative">
-                                <div class="absolute top-2 right-2 border border-blue-500 text-blue-500 text-xs font-bold px-1 rounded">NEW</div>
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-yellow-400 text-white rounded p-1.5 mr-2">🟨</div>
-                                    <h5 class="font-bold text-lg">화이트보드</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"화이트보드를 사용하여 학생들이 수업 내..."</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 텍스트를 넘어 마인드맵, 그림, 구조화된 다이어그램 등 시각적인 캔버스가 필요한 창의적 활동에 적합합니다.</p>
-                            </div>
-                            <!-- 토론 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-blue-400 text-white rounded p-1.5 mr-2">🔨</div>
-                                    <h5 class="font-bold text-lg">토론</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"강력한 논거 구축하기"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 특정 주제에 대해 AI와 찬반 토론을 진행하며 논리력과 비판적 사고 능력을 기르도록 훈련시킵니다.</p>
-                            </div>
-                            <!-- 도입 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-green-500 text-white rounded p-1.5 mr-2">💡</div>
-                                    <h5 class="font-bold text-lg">도입</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"흥미를 유발하는 시나리오"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 본격적인 수업 전, 학생들의 이목을 끄는 흥미로운 딜레마나 상황(Hook)을 던져 동기를 부여합니다.</p>
-                            </div>
-                            <!-- 브레인스토밍 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-green-600 text-white rounded p-1.5 mr-2">🧠</div>
-                                    <h5 class="font-bold text-lg">브레인스토밍</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"즉각적인 새로운 아이디어 생성"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 프로젝트나 글쓰기 기획 단계에서 아이디어가 막혔을 때, AI가 확산적 사고를 돕도록 다양한 키워드를 던져줍니다.</p>
-                            </div>
-                            <!-- 캐릭터 채팅 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-emerald-500 text-white rounded p-1.5 mr-2">👤</div>
-                                    <h5 class="font-bold text-lg">캐릭터 채팅</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"역사적 인물과 대화하기"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 역사적 위인, 소설 속 주인공, 혹은 특정 직업군으로 AI의 페르소나를 설정하여 실감 나는 롤플레잉 학습을 진행합니다.</p>
-                            </div>
-                            <!-- 탐구 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-teal-500 text-white rounded p-1.5 mr-2">🔍</div>
-                                    <h5 class="font-bold text-lg">탐구</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"개념 탐구 및 가설 검증"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 과학 실험이나 사회 현상에 대해 학생 스스로 가설을 세우고, AI와 질의응답하며 원리를 파악해 나갑니다.</p>
-                            </div>
-                            <!-- 실생활 수학 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-green-400 text-white rounded p-1.5 mr-2">🧩</div>
-                                    <h5 class="font-bold text-lg">실생활 수학</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"수학 문장제 연습"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 추상적인 수식이 아닌 마트 계산, 여행 경비 등 일상생활과 접목된 수학 문제를 풀며 응용력을 기릅니다.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Assess (평가) -->
-                    <div class="mb-8">
-                        <h4 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-l-4 border-purple-500 pl-3">Assess (이해도 평가)</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- 이해도 확인 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-purple-400 text-white rounded p-1.5 mr-2">✅</div>
-                                    <h5 class="font-bold text-lg">이해도 확인</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"수업 중 이해도 확인하기"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 수업 중간에 형성평가용 퀴즈를 던져 학생들이 개념을 제대로 따라오고 있는지 실시간으로 점검합니다.</p>
-                            </div>
-                            <!-- 출구 티켓 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-purple-500 text-white rounded p-1.5 mr-2">🎫</div>
-                                    <h5 class="font-bold text-lg">출구 티켓</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"수업 마지막에 학생들의 학습 내용을 평가하기"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 수업 종료 직전 오늘 배운 핵심 내용을 요약하게 하거나 질문을 남기게 하여 학습을 최종 정리합니다.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Write (쓰기) -->
-                    <div>
-                        <h4 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-l-4 border-red-500 pl-3">Write (쓰기 및 목표 설정)</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <!-- 글쓰기 코치 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-orange-500 text-white rounded p-1.5 mr-2">✍️</div>
-                                    <h5 class="font-bold text-lg">글쓰기 코치</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"맞춤형 글쓰기 지원입니다."</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 에세이나 보고서를 작성할 때 글의 구조, 어휘 선택, 문맥에 대해 AI가 실시간 첨삭 코치가 되어줍니다.</p>
-                            </div>
-                            <!-- 장점 & 성장 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-orange-400 text-white rounded p-1.5 mr-2">⭐</div>
-                                    <h5 class="font-bold text-lg">장점 & 성장</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"강점 및 개선 영역에 대한 피드백"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 학생 결과물에 대해 잘한 점(Glows)을 먼저 칭찬하고, 구체적으로 발전시킬 점(Grows)을 짚어 피드백합니다.</p>
-                            </div>
-                            <!-- 다음 단계 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-red-500 text-white rounded p-1.5 mr-2">📈</div>
-                                    <h5 class="font-bold text-lg">다음 단계</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"다음 단계에 대한 안내입니다."</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 과제 수행 중 막혔을 때, 학생이 포기하지 않도록 다음에 취해야 할 구체적인 스텝을 단계별로 안내합니다.</p>
-                            </div>
-                            <!-- 목표 설정 -->
-                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
-                                <div class="flex items-center mb-2">
-                                    <div class="bg-red-400 text-white rounded p-1.5 mr-2">🎯</div>
-                                    <h5 class="font-bold text-lg">목표 설정</h5>
-                                </div>
-                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"목표를 설정하여 진도 관리하기"</p>
-                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 프로젝트 기획 단계에서 학생 스스로 도달해야 할 학습 목표를 명확히 세우고 진행 상황을 점검하도록 돕습니다.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
-                    <h3 class="text-lg font-bold mb-2">📲 모니터링 실습: 신호등 컬러의 이해</h3>
-                    <ul class="list-disc pl-6 space-y-2">
-                        <li>활동 생성 후 <strong>[QR코드]</strong>나 <strong>[링크 복사]</strong>로 학생들에게 배포합니다.</li>
-                        <li>교사 화면 대시보드에서는 학생의 상태가 직관적인 색상으로 표시됩니다.</li>
-                        <li><strong>빨간색:</strong> 참여 저조 또는 도움이 필요한 상태</li>
-                        <li><strong>노란색:</strong> 진행 중 상태</li>
-                        <li><strong>초록색:</strong> 활동 완료 및 목표 도달 상태</li>
-                    </ul>
+                <p class="mb-6 text-gray-600 dark:text-gray-300 text-lg">정적인 웹 자료나 영상을 학생들이 직접 참여하는 대화형 워크스페이스로 변환합니다.</p>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border-t-4 border-yellow-400 mb-6">
+                    <h3 class="text-xl font-bold mb-4">🚀 1분 실습 따라하기: 부스트 만들기</h3>
+                    <ol class="list-decimal pl-6 space-y-3 text-lg mb-4">
+                        <li>활용하고 싶은 <strong>유튜브 영상이나 웹 문서</strong>를 띄워 둡니다.</li>
+                        <li>화면 우측 하단의 <strong>(B) 브리스크 아이콘</strong>을 클릭합니다.</li>
+                        <li>맨 아래에 위치한 <strong>[부스트]</strong> 아이콘을 클릭하여 활동을 시작합니다.</li>
+                    </ol>
                 </div>
             </section>
 
+            <!-- 참고 사이트 (구글시트 연동) -->
+            <section id="ref-sites" class="content-section hidden max-w-5xl mx-auto pb-10">
+                <h2 class="text-3xl font-bold mb-2 text-blue-600 dark:text-blue-400">🔗 연수 참고 사이트</h2>
+                <p class="mb-6 text-gray-600 dark:text-gray-300 text-lg">교육에 유용한 참고 사이트입니다. QR코드를 클릭하면 크게 확대하여 학생들에게 안내할 수 있습니다.</p>
+                
+                <div id="refSitesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- 데이터를 불러오는 중일 때 표시 -->
+                    <div class="col-span-full text-center py-10 text-gray-500">
+                        데이터 서버(구글 시트)에서 리스트를 불러오고 있습니다...
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
+    <!-- QR코드 확대 모달 -->
+    <div id="qrModal" class="fixed inset-0 bg-black/80 hidden flex-col items-center justify-center z-50 transition-opacity" onclick="closeModal()">
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-xl text-center max-w-sm w-full mx-4 shadow-2xl" onclick="event.stopPropagation()">
+            <h3 id="modalTitle" class="text-2xl font-bold mb-6 text-gray-800 dark:text-white"></h3>
+            <div class="bg-white p-2 rounded-lg inline-block mb-6 shadow-inner">
+                <img id="modalQrImg" src="" alt="확대된 QR Code" class="w-64 h-64 mx-auto">
+            </div>
+            <button onclick="closeModal()" class="w-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-bold text-lg transition-colors">닫기</button>
+        </div>
+    </div>
+
     <script>
-        // 메뉴 클릭 시 화면 전환 스크립트
+        // === [화면 제어 스크립트] ===
         function showContent(sectionId, element) {
             document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.add('hidden');
@@ -305,12 +184,11 @@
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.classList.remove('active');
             });
-            
             document.getElementById(sectionId).classList.remove('hidden');
             element.classList.add('active');
         }
 
-        // 다크/라이트 모드 토글 스크립트
+        // === [다크모드 스크립트] ===
         const themeToggleBtn = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
         const htmlElement = document.documentElement;
@@ -326,6 +204,108 @@
                 themeIcon.textContent = '☀️ 라이트모드';
             }
         });
+
+        // === [모달 제어 스크립트] ===
+        function openModal(imgSrc, title) {
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalQrImg').src = imgSrc;
+            document.getElementById('qrModal').classList.remove('hidden');
+            document.getElementById('qrModal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('qrModal').classList.add('hidden');
+            document.getElementById('qrModal').classList.remove('flex');
+        }
+
+        // === [구글 시트 데이터베이스 연동 스크립트] ===
+        const SHEET_ID = '1ORD0SmK4-cMvZHqWJFR-apcv6JTTCobFp2qK9qaeNHI';
+        
+        // CSV 텍스트 파싱 함수
+        function parseCSV(str) {
+            const arr = [];
+            let quote = false, row = [], col = '';
+            for (let c = 0; c < str.length; c++) {
+                let cc = str[c], nc = str[c+1];
+                if (cc == '"' && quote && nc == '"') { col += cc; c++; continue; }
+                if (cc == '"') { quote = !quote; continue; }
+                if (cc == ',' && !quote) { row.push(col); col = ''; continue; }
+                if (cc == '\n' && !quote) {
+                    if (col.endsWith('\r')) col = col.slice(0, -1);
+                    row.push(col); arr.push(row); row = []; col = ''; continue; 
+                }
+                col += cc;
+            }
+            if (col.endsWith('\r')) col = col.slice(0, -1);
+            row.push(col); arr.push(row);
+            return arr;
+        }
+
+        // 시트 데이터 불러오기 공통 함수
+        async function fetchSheetData(sheetName) {
+            const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(sheetName)}`;
+            try {
+                const response = await fetch(url);
+                const csv = await response.text();
+                return parseCSV(csv);
+            } catch (error) {
+                console.error('Data fetch error:', error);
+                return [];
+            }
+        }
+
+        // 데이터 초기화 및 UI 렌더링
+        async function initData() {
+            // 1. '설정' 시트 반영
+            const settingsData = await fetchSheetData('설정');
+            if (settingsData && settingsData.length > 1) { // 1행(index 0)은 헤더, 2행(index 1)이 데이터
+                const authCode = settingsData[1][0]; // A2
+                const targetAudience = settingsData[1][1]; // B2
+                
+                document.getElementById('dbAuthCode').innerText = authCode;
+                document.getElementById('targetAudience').innerText = targetAudience;
+            }
+
+            // 2. '참고사이트' 시트 반영
+            const refsData = await fetchSheetData('참고사이트');
+            const refContainer = document.getElementById('refSitesContainer');
+            refContainer.innerHTML = ''; // 로딩 메시지 지우기
+
+            if (refsData && refsData.length > 1) {
+                for (let i = 1; i < refsData.length; i++) {
+                    const siteName = refsData[i][0];
+                    const siteUrl = refsData[i][1];
+                    
+                    if (!siteName || !siteUrl) continue;
+
+                    // QR 코드 API 연동 (150px 썸네일용, 500px 모달 확대용)
+                    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(siteUrl)}`;
+                    const highResQrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(siteUrl)}`;
+
+                    // 카드 생성
+                    const card = `
+                        <div class="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 flex items-center justify-between hover:shadow-lg transition-shadow">
+                            <div class="flex-1 min-w-0 pr-4">
+                                <h4 class="font-bold text-lg text-gray-800 dark:text-white mb-1 truncate">${siteName}</h4>
+                                <a href="${siteUrl}" target="_blank" class="text-sm text-blue-500 hover:text-blue-700 hover:underline break-all truncate block">바로가기 링크</a>
+                            </div>
+                            <div class="shrink-0 text-center cursor-pointer group" onclick="openModal('${highResQrUrl}', '${siteName}')">
+                                <div class="bg-white p-1 rounded border border-gray-200 shadow-sm transition-transform group-hover:scale-105">
+                                    <img src="${qrUrl}" alt="QR Code" class="w-16 h-16">
+                                </div>
+                                <p class="text-xs font-bold text-gray-500 dark:text-gray-400 mt-2 bg-gray-100 dark:bg-gray-700 rounded-full px-2 py-0.5 inline-block group-hover:bg-blue-100 group-hover:text-blue-600 transition-colors">🔍 확대</p>
+                            </div>
+                        </div>
+                    `;
+                    refContainer.insertAdjacentHTML('beforeend', card);
+                }
+            } else {
+                refContainer.innerHTML = '<p class="text-gray-500">등록된 참고 사이트가 없습니다.</p>';
+            }
+        }
+
+        // 페이지 로드 시 데이터 패칭 실행
+        document.addEventListener('DOMContentLoaded', initData);
     </script>
 </body>
 </html>
