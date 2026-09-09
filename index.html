@@ -3,532 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 리터러시 기초 및 프롬프트 실습 (Brisk Teaching)</title>
-    <!-- Tailwind CSS Load -->
+    <title>Brisk Teaching 연수 대시보드</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
-            darkMode: 'class', // Enable class-based dark mode
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
+            darkMode: 'class',
         }
     </script>
-    <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        
-        body { font-family: 'Inter', sans-serif; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .dark ::-webkit-scrollbar-thumb { background: #475569; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .dark ::-webkit-scrollbar-thumb:hover { background: #64748b; }
-        
-        .fade-in { animation: fadeIn 0.4s ease-in-out; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        /* Mobile menu toggle transition */
-        .mobile-menu-open { transform: translateX(0%); }
-        .mobile-menu-closed { transform: translateX(-100%); }
-        
-        /* Smooth theme transition */
-        body, main, nav, div, p, h1, h2, h3, h4, span, button {
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
+        .menu-item { cursor: pointer; transition: all 0.2s; }
+        .menu-item:hover { background-color: #e5e7eb; }
+        .dark .menu-item:hover { background-color: #374151; }
+        .menu-item.active { background-color: #3b82f6; color: white; font-weight: bold; }
+        .dark .menu-item.active { background-color: #2563eb; color: white; }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-gray-800 dark:text-gray-200 antialiased selection:bg-indigo-200 selection:text-indigo-900 dark:selection:bg-indigo-900 dark:selection:text-indigo-200">
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 h-screen flex flex-col font-sans transition-colors duration-200">
 
-    <!-- Mobile Menu Overlay & Button -->
-    <div class="md:hidden flex items-center justify-between bg-indigo-900 dark:bg-slate-950 text-white p-4 shadow-md sticky top-0 z-50">
-        <div class="font-bold text-lg truncate">Brisk 연수 매뉴얼</div>
-        <div class="flex items-center space-x-4">
-            <button class="theme-toggle-btn text-xl focus:outline-none text-indigo-300 hover:text-white" aria-label="Toggle Dark Mode">
-                <i class="fas fa-moon theme-icon-fa"></i>
-            </button>
-            <button id="mobile-menu-btn" class="text-2xl focus:outline-none">
-                <i class="fas fa-bars"></i>
-            </button>
+    <!-- 상단 헤더 -->
+    <header class="bg-white dark:bg-gray-800 shadow-md p-4 flex justify-between items-center z-10 shrink-0">
+        <div>
+            <h1 class="text-2xl font-bold text-blue-600 dark:text-blue-400">AI 리터러시 기초 및 Brisk Teaching 활용 실습</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1 font-semibold">개발자: 가치있는 미래교육 연구소 대표 김병찬</p>
         </div>
-    </div>
+        <button id="themeToggle" class="p-2 rounded-lg bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+            <span id="themeIcon" class="text-xl">🌙 다크모드</span>
+        </button>
+    </header>
 
-    <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar Navigation -->
-        <nav id="sidebar" class="bg-indigo-900 dark:bg-slate-950 text-indigo-100 w-64 flex-shrink-0 flex flex-col transition-transform duration-300 ease-in-out absolute md:relative z-40 h-full mobile-menu-closed md:transform-none">
-            <div class="p-6 pb-2">
-                <h1 class="text-2xl font-extrabold text-white mb-2 leading-tight">AI 리터러시 &<br>Brisk 실습</h1>
-                <p class="text-xs text-indigo-300 dark:text-slate-400 font-medium tracking-wide uppercase mt-4 border-b border-indigo-700 dark:border-slate-800 pb-2">
-                    개발자: 가치있는 미래교육 연구소<br>대표 김병찬
-                </p>
+    <!-- 메인 레이아웃 -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- 좌측 사이드바 카테고리 -->
+        <nav class="w-72 bg-white dark:bg-gray-800 shadow-lg shrink-0 flex flex-col overflow-y-auto">
+            <div class="p-4 border-b dark:border-gray-700">
+                <h2 class="text-lg font-bold">실습 카테고리</h2>
+                <p class="text-xs text-gray-500 dark:text-gray-400">순서대로 클릭하며 따라해 보세요.</p>
             </div>
-            
-            <div class="overflow-y-auto flex-1 px-4 py-4 space-y-2">
-                <!-- Navigation Links -->
-                <button onclick="showSection('intro')" id="btn-intro" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 bg-indigo-800 dark:bg-slate-800 text-white rounded-lg transition-colors text-left hover:bg-indigo-700 dark:hover:bg-slate-700 font-medium">
-                    <i class="fas fa-home w-5 text-center"></i>
-                    <span>연수 준비 및 개요</span>
-                </button>
-                
-                <button onclick="showSection('session1')" id="btn-session1" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-left hover:bg-indigo-700 dark:hover:bg-slate-700 hover:text-white font-medium text-indigo-200 dark:text-slate-300">
-                    <i class="fas fa-plug w-5 text-center"></i>
-                    <span>1차시: 세팅 & 영상 퀴즈</span>
-                </button>
-                
-                <button onclick="showSection('session2')" id="btn-session2" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-left hover:bg-indigo-700 dark:hover:bg-slate-700 hover:text-white font-medium text-indigo-200 dark:text-slate-300">
-                    <i class="fas fa-file-alt w-5 text-center"></i>
-                    <span>2차시: 수업자료 & 피드백</span>
-                </button>
-
-                <button onclick="showSection('session3')" id="btn-session3" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-left hover:bg-indigo-700 dark:hover:bg-slate-700 hover:text-white font-medium text-indigo-200 dark:text-slate-300">
-                    <i class="fas fa-rocket w-5 text-center"></i>
-                    <span>3차시: AI 튜터 Boost</span>
-                </button>
-
-                <button onclick="showSection('tips')" id="btn-tips" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-left hover:bg-indigo-700 dark:hover:bg-slate-700 hover:text-white font-medium text-indigo-200 dark:text-slate-300">
-                    <i class="fas fa-lightbulb w-5 text-center text-yellow-400"></i>
-                    <span>핵심 팁 & 글쓰기 점검</span>
-                </button>
-            </div>
-            
-            <!-- Theme Toggle (Desktop) & Copyright -->
-            <div class="p-4 border-t border-indigo-800 dark:border-slate-800">
-                <button class="theme-toggle-btn w-full flex items-center justify-center space-x-2 px-4 py-2 mb-3 rounded-lg bg-indigo-800 dark:bg-slate-800 hover:bg-indigo-700 dark:hover:bg-slate-700 transition-colors text-sm font-medium text-indigo-200 dark:text-slate-300">
-                    <i class="fas fa-moon theme-icon-fa"></i>
-                    <span class="theme-toggle-text">다크 모드 켜기</span>
-                </button>
-                <div class="text-xs text-indigo-400 dark:text-slate-500 text-center">
-                    &copy; 2024 가치있는 미래교육 연구소
-                </div>
-            </div>
+            <ul class="flex flex-col p-2 space-y-1" id="menuList">
+                <li class="menu-item active p-3 rounded-md" onclick="showContent('intro', this)">👋 연수 안내 및 준비</li>
+                <li class="menu-item p-3 rounded-md" onclick="showContent('mod1', this)">1️⃣ [설정] 환경 세팅하기</li>
+                <li class="menu-item p-3 rounded-md" onclick="showContent('mod2', this)">2️⃣ [만들기] 수업/퀴즈 제작</li>
+                <li class="menu-item p-3 rounded-md" onclick="showContent('mod3', this)">3️⃣ [평가] 검사 및 피드백</li>
+                <li class="menu-item p-3 rounded-md" onclick="showContent('mod4', this)">4️⃣ [부스트] 학생 활동 제작 ★</li>
+            </ul>
         </nav>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 overflow-y-auto bg-slate-50 dark:bg-slate-900 relative w-full transition-colors duration-300" id="main-content">
+        <!-- 우측 실습 콘텐츠 영역 (전체화면 꽉 차게) -->
+        <main class="flex-1 p-8 overflow-y-auto bg-gray-50 dark:bg-gray-900 relative">
             
-            <!-- SECTION: INTRO -->
-            <section id="intro" class="content-section max-w-5xl mx-auto p-6 md:p-10 fade-in hidden">
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-8 mb-8">
-                    <div class="flex items-center space-x-4 mb-6">
-                        <div class="bg-indigo-100 dark:bg-indigo-900/50 p-3 rounded-full text-indigo-600 dark:text-indigo-400">
-                            <i class="fas fa-info-circle text-2xl"></i>
-                        </div>
-                        <h2 class="text-3xl font-bold text-gray-800 dark:text-white">연수 준비사항 및 개요</h2>
-                    </div>
-                    
-                    <div class="mt-6">
-                        <div class="bg-orange-50 dark:bg-orange-900/20 p-6 rounded-xl border border-orange-200 dark:border-orange-800/30">
-                            <h3 class="text-lg font-bold text-orange-800 dark:text-orange-400 mb-4 border-b border-orange-200 dark:border-orange-800/50 pb-2"><i class="fas fa-laptop text-orange-600 dark:text-orange-500 mr-2"></i>연수 필수 준비물</h3>
-                            <ul class="space-y-4 text-gray-700 dark:text-gray-300 text-lg">
-                                <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-orange-500 mt-1 mr-3 text-xl"></i> 
-                                    <span><strong>노트북 또는 PC:</strong> Chrome(크롬) 또는 Edge(엣지) 브라우저가 설치된 기기 <br><span class="text-sm text-gray-500 dark:text-gray-400">(※ 웨일 브라우저는 일부 확장프로그램 기능에 제한이 있을 수 있습니다.)</span></span>
-                                </li>
-                                <li class="flex items-start">
-                                    <i class="fas fa-check-circle text-orange-500 mt-1 mr-3 text-xl"></i> 
-                                    <span><strong>구글 계정:</strong> Google 아이디 및 비밀번호 (학교용 Workspace 계정 또는 개인 계정 모두 가능)</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-indigo-50 dark:bg-indigo-900/30 border-l-4 border-indigo-500 p-6 rounded-r-xl shadow-sm">
-                    <h3 class="text-xl font-bold text-indigo-900 dark:text-indigo-300 mb-2">환영합니다!</h3>
-                    <p class="text-indigo-800 dark:text-indigo-200/80 leading-relaxed">
-                        선생님, 반갑습니다! 오늘 배우실 <strong>Brisk Teaching(브리스크 티칭)</strong>은 복잡한 AI 사이트에 별도로 접속할 필요 없이, 평소 쓰시던 인터넷 화면(유튜브, 뉴스 기사, 구글 문서 등)에서 버튼 하나만 누르면 마법처럼 수업 자료와 피드백을 만들어주는 혁신적인 도구입니다. <br><br>
-                        이 대시보드는 <strong>아무것도 모르는 초보자도 100% 따라 할 수 있도록 아주 상세하게</strong> 작성되었습니다. 좌측의 [1차시] 메뉴부터 순서대로 클릭하며 실습을 시작해 보세요!
-                    </p>
-                </div>
-            </section>
-
-            <!-- SECTION: SESSION 1 -->
-            <section id="session1" class="content-section max-w-5xl mx-auto p-6 md:p-10 fade-in hidden">
-                <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">1차시: 기본 세팅 & 유튜브 영상 활용</h2>
-                <p class="text-gray-500 dark:text-gray-400 mb-8">AI를 내 브라우저에 장착하고, 10분짜리 영상을 1분 만에 퀴즈로 만들어봅니다.</p>
-
-                <!-- STEP 1: Setup -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-8 mb-8 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-2 h-full bg-blue-500"></div>
-                    <h3 class="text-2xl font-bold text-blue-800 dark:text-blue-400 mb-4 flex items-center">
-                        <span class="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 px-3 py-1 rounded-lg mr-3 text-sm">Step 1</span> 
-                        Brisk Teaching 최신 버전 설치 및 로그인 (필수)
-                    </h3>
-                    <p class="mb-4 text-gray-600 dark:text-gray-300 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-md border border-blue-100 dark:border-blue-800/30">
-                        <i class="fas fa-exclamation-triangle text-yellow-500 dark:text-yellow-400 mr-2"></i> 이 과정은 최초 1회만 진행하면 됩니다. 천천히 순서대로 따라오세요.
-                    </p>
-                    
-                    <ol class="list-decimal pl-6 space-y-5 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-                        <li>
-                            <span class="font-bold text-gray-900 dark:text-white">Chrome 웹스토어 접속하기:</span> 바탕화면에서 크롬 브라우저를 열고, 구글 검색창에 <span class="bg-gray-100 dark:bg-slate-700 text-red-600 dark:text-red-400 px-2 py-0.5 rounded font-mono text-base border dark:border-slate-600">Brisk Teaching</span>이라고 검색하여 가장 상단에 나오는 웹스토어 링크를 클릭합니다.
-                        </li>
-                        <li>
-                            <span class="font-bold text-gray-900 dark:text-white">확장 프로그램 추가:</span> 우측 상단의 파란색 <span class="bg-blue-600 dark:bg-blue-700 text-white px-2 py-1 rounded text-sm shadow">Chrome에 추가</span> 버튼을 클릭합니다. 팝업창이 뜨면 다시 한번 '확장 프로그램 추가'를 누릅니다.
-                        </li>
-                        <li>
-                            <span class="font-bold text-blue-600 dark:text-blue-400 underline">압정(핀)으로 고정하기 (매우 중요):</span> 화면 우측 상단(주소창 오른쪽 끝)에 있는 <strong>퍼즐 조각 모양(<i class="fas fa-puzzle-piece"></i>) 아이콘</strong>을 클릭합니다. 목록에서 Brisk Teaching을 찾아 옆에 있는 <strong>압정(핀) 모양 아이콘</strong>을 클릭해 파란색(또는 밝은색)으로 활성화시킵니다.
-                        </li>
-                        <li>
-                            <span class="font-bold text-gray-900 dark:text-white">로그인 하기:</span> 화면 우측 하단 구석에 작고 동그란 <span class="bg-black text-white px-2 py-0.5 rounded-full text-sm font-bold border-2 border-white shadow">B</span> 아이콘이 나타납니다. 이 아이콘을 클릭한 후, <strong>[Sign in with Google]</strong>을 눌러 선생님의 구글 계정으로 로그인합니다.
-                        </li>
-                        <li>
-                            <span class="font-bold text-gray-900 dark:text-white">역할 선택:</span> 직업(Teacher)과 학교급(High School 등)을 선택하면 준비 완료입니다!
-                        </li>
-                    </ol>
-                </div>
-
-                <!-- STEP 2: YouTube Quiz -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-8 mb-8 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-2 h-full bg-red-500"></div>
-                    <h3 class="text-2xl font-bold text-red-800 dark:text-red-400 mb-4 flex items-center">
-                        <span class="bg-red-100 dark:bg-red-900/50 text-red-800 dark:text-red-300 px-3 py-1 rounded-lg mr-3 text-sm">Step 2</span> 
-                        [실습] 유튜브 영상으로 수업자료 및 퀴즈 추출하기
-                    </h3>
-                    <p class="mb-4 text-gray-600 dark:text-gray-400">영상을 끝까지 보지 않아도, AI가 영상의 자막을 순식간에 읽고 퀴즈를 만들어 줍니다.</p>
-
-                    <div class="bg-gray-100 dark:bg-slate-700/50 rounded-lg p-5 mb-6 border border-gray-200 dark:border-slate-600">
-                        <h4 class="font-bold text-gray-800 dark:text-gray-200 mb-2"><i class="fas fa-video text-red-500 mr-2"></i>실습 상황</h4>
-                        <p class="text-gray-600 dark:text-gray-300 text-sm">EBS 다큐프라임, 과학 실험 영상, 역사 다큐멘터리 등 수업에 활용하고 싶은 5~15분 내외의 유튜브 영상을 하나 골라 재생해 봅니다.</p>
-                    </div>
-
-                    <ol class="list-decimal pl-6 space-y-5 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-                        <li>
-                            유튜브에서 원하는 영상을 <strong>재생(또는 일시정지)</strong> 해 둡니다.
-                        </li>
-                        <li>
-                            화면 우측 하단에 동동 떠 있는 까만색 <span class="bg-black text-white px-2 py-0.5 rounded-full text-sm font-bold border-2 border-white shadow cursor-pointer">B</span> <strong>(Brisk 아이콘)</strong>을 클릭합니다.
-                        </li>
-                        <li>
-                            최신 메인 메뉴 중 가장 첫 번째인 <span class="bg-gray-100 dark:bg-slate-600 border border-gray-300 dark:border-slate-500 px-2 py-1 rounded font-bold text-black dark:text-white shadow-sm cursor-pointer"><i class="fas fa-plus text-xs mr-1 text-blue-500"></i> Create (만들기)</span> 메뉴를 클릭합니다.
-                        </li>
-                        <li>
-                            다양한 만들기 옵션 중 <strong>[Quiz (퀴즈)]</strong> 버튼을 찾아 클릭합니다.
-                        </li>
-                        <li>
-                            <span class="font-bold text-red-600 dark:text-red-400">세부 옵션을 설정합니다 (핵심):</span>
-                            <ul class="list-disc pl-6 mt-2 space-y-2 text-base text-gray-600 dark:text-gray-300 bg-red-50 dark:bg-red-900/20 p-4 rounded-lg border border-red-100 dark:border-red-900/30">
-                                <li><strong>Grade Level (학년 수준):</strong> <span class="font-bold text-gray-800 dark:text-white">10th~12th Grade</span> (고등학생 수준) 선택</li>
-                                <li><strong>Number of Questions (문항 수):</strong> 5~10문제 등 원하는 개수 지정</li>
-                                <li><strong>Question Type (질문 유형):</strong> Multiple choice(객관식), Short response(단답형) 또는 Both(혼합) 선택</li>
-                                <li><strong>Language (언어):</strong> 반드시 <span class="font-bold text-blue-600 dark:text-blue-400 underline">Korean(한국어)</span>를 선택해 주세요.</li>
-                            </ul>
-                        </li>
-                        <li>
-                            설정을 마쳤다면, 우측 하단의 파란색 <span class="bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm shadow cursor-pointer font-bold">Brisk It (생성하기)</span> 버튼을 클릭합니다!
-                        </li>
-                    </ol>
-                    <div class="mt-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-900/50 p-4 rounded-lg flex items-start">
-                        <i class="fas fa-magic text-green-500 mt-1 text-xl mr-3"></i>
-                        <p class="text-gray-700 dark:text-gray-300 text-sm">
-                            <strong>[마법 같은 결과]</strong> 버튼을 누르면 자동으로 새로운 '구글 문서(Google Docs)' 창이 열립니다. AI가 실시간으로 영상 내용을 바탕으로 퀴즈와 하단 정답지를 타이핑하는 과정을 감상해 보세요!
-                        </p>
+            <!-- 인트로 -->
+            <section id="intro" class="content-section h-full flex flex-col justify-center max-w-4xl mx-auto">
+                <h1 class="text-4xl font-extrabold mb-6 text-center">한양과학기술고등학교 선생님, 환영합니다!</h1>
+                <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-md border-l-4 border-blue-500">
+                    <h3 class="text-2xl font-bold mb-4">💡 이 대시보드 활용법</h3>
+                    <ul class="list-disc pl-6 space-y-3 text-lg">
+                        <li>좌측 메뉴를 <strong>위에서부터 순서대로</strong> 클릭하세요.</li>
+                        <li>각 화면에 제시된 <strong>[1분 실습 따라하기]</strong>를 보며 본인의 크롬 브라우저에서 직접 클릭해 봅니다.</li>
+                        <li>궁금한 점이 생기면 언제든 손을 들어주세요!</li>
+                    </ul>
+                    <div class="mt-8 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg">
+                        <p class="font-bold">✅ 지금 바로 준비할 것:</p>
+                        <p>노트북을 켜고, <strong>크롬(Chrome) 브라우저</strong>를 실행한 뒤 구글 계정으로 로그인해 주세요.</p>
                     </div>
                 </div>
             </section>
 
-            <!-- SECTION: SESSION 2 -->
-            <section id="session2" class="content-section max-w-5xl mx-auto p-6 md:p-10 fade-in hidden">
-                <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">2차시: 수업자료 생성 & 즉각적 맞춤 피드백</h2>
-                <p class="text-gray-500 dark:text-gray-400 mb-8">인터넷 기사를 수업 자료로 바꾸고, 학생의 글에 순식간에 전문적인 피드백을 달아봅니다.</p>
+            <!-- 모듈 1 -->
+            <section id="mod1" class="content-section hidden max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold mb-6 border-b pb-2 dark:border-gray-700">모듈 1: 브리스크 티칭 100% 일치 세팅하기</h2>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border-t-4 border-green-500">
+                    <h3 class="text-xl font-bold mb-4">🚀 1분 실습 따라하기: 설치 및 한글 설정</h3>
+                    <ol class="list-decimal pl-6 space-y-4 text-lg">
+                        <li><strong>크롬 웹스토어 접속:</strong> 구글에서 'Brisk Teaching'을 검색하여 크롬 웹스토어에 들어갑니다.</li>
+                        <li><strong>설치하기:</strong> 파란색 [Chrome에 추가] 버튼을 클릭합니다.</li>
+                        <li><strong>핀(📌) 고정하기:</strong> 브라우저 우측 상단의 <strong>퍼즐 모양 아이콘(확장 프로그램)</strong>을 누르고, Brisk Teaching 옆의 압정 모양을 클릭해 고정합니다.</li>
+                        <li><strong>초기 로그인:</strong> 학교에서 사용하는 Google Workspace 계정으로 로그인합니다.</li>
+                        <li><strong>한글 메뉴로 바꾸기 (핵심!):</strong> 화면 우측 하단에 떠 있는 <strong>검은색 (B) 로고</strong>를 클릭합니다. 나타난 창의 우측 상단 <strong>톱니바퀴(⚙️설정)</strong> 클릭 ➔ <strong>Language</strong>에서 <strong>한국어</strong>를 선택합니다.</li>
+                    </ol>
+                </div>
+            </section>
 
-                <!-- STEP 3: Lesson Plan -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-8 mb-8 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-2 h-full bg-green-500"></div>
-                    <h3 class="text-2xl font-bold text-green-800 dark:text-green-400 mb-4 flex items-center">
-                        <span class="bg-green-100 dark:bg-green-900/50 text-green-800 dark:text-green-300 px-3 py-1 rounded-lg mr-3 text-sm">Step 3</span> 
-                        [실습] 웹 기사로 수업 계획서 및 학습지 만들기
+            <!-- 모듈 2 -->
+            <section id="mod2" class="content-section hidden max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold mb-6 border-b pb-2 dark:border-gray-700">모듈 2: [만들기] 메뉴로 순식간에 수업 준비하기</h2>
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border-t-4 border-purple-500">
+                    <h3 class="text-xl font-bold mb-4">🚀 1분 실습 따라하기: 퀴즈 만들고 구글 설문지로 빼기</h3>
+                    <ol class="list-decimal pl-6 space-y-4 text-lg">
+                        <li><strong>새 문서 열기:</strong> 주소창에 `docs.new`를 입력하여 빈 구글 문서를 엽니다.</li>
+                        <li><strong>브리스크 호출:</strong> 우측 하단의 <strong>(B) 아이콘</strong>을 클릭합니다.</li>
+                        <li><strong>메뉴 선택:</strong> 맨 위쪽의 <strong>[만들기]</strong>를 클릭하고, 이어서 <strong>[퀴즈]</strong>를 선택합니다.</li>
+                        <li><strong>프롬프트 입력:</strong> <em>"고등학교 1학년 통합과학 수준으로, 뉴턴의 운동 법칙에 대한 객관식 3문제를 만들어줘"</em> 라고 입력하고 <strong>생성</strong>을 누릅니다.</li>
+                        <li><strong>구글 설문지 변환:</strong> 문항이 생성된 후 우측 하단 <strong>[Google 설문지로 내보내기]</strong>를 클릭합니다.</li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- 모듈 3 -->
+            <section id="mod3" class="content-section hidden max-w-5xl mx-auto">
+                <h2 class="text-3xl font-bold mb-6 border-b pb-2 dark:border-gray-700">모듈 3: [평가] 글쓰기 검사 및 피드백 제공</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-bold mb-4 text-red-500">🔍 글쓰기 검사 (과정 중심 평가)</h3>
+                        <ol class="list-decimal pl-5 space-y-3">
+                            <li>학생이 제출한 구글 문서를 엽니다.</li>
+                            <li>우측 하단 (B) 클릭 후 <strong>[글쓰기 검사]</strong>를 누릅니다.</li>
+                            <li>하단의 <strong>재생(▶) 버튼</strong>을 누르면 학생이 타이핑한 과정이 타임랩스 영상처럼 재생됩니다.</li>
+                        </ol>
+                    </div>
+                    <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+                        <h3 class="text-xl font-bold mb-4 text-orange-500">📝 피드백 제공 (맞춤형 코멘트)</h3>
+                        <ol class="list-decimal pl-5 space-y-3">
+                            <li>학생 문서에서 (B) 클릭 후 <strong>[피드백 제공]</strong>을 누릅니다.</li>
+                            <li>피드백 초점을 <strong>Glows & Grows (잘한 점과 개선점)</strong>로 선택합니다.</li>
+                            <li>생성된 피드백을 확인하고 <strong>문서에 댓글로 삽입</strong>을 누릅니다.</li>
+                        </ol>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 모듈 4 (Brisk Boost 활동 유형 완벽 반영) -->
+            <section id="mod4" class="content-section hidden max-w-5xl mx-auto pb-10">
+                <h2 class="text-3xl font-bold mb-2 text-blue-600 dark:text-blue-400">모듈 4: [부스트] 학생 참여형 활동지 만들기</h2>
+                <p class="mb-6 text-gray-600 dark:text-gray-300 text-lg">정적인 웹 자료나 영상을 학생들이 직접 참여하는 대화형 워크스페이스로 변환합니다. 수업 목적에 맞는 활동 유형을 선택해 보세요.</p>
+                
+                <div class="bg-gray-100 dark:bg-gray-700 p-6 rounded-xl shadow-inner mb-6">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center">
+                        <span class="bg-blue-600 text-white px-3 py-1 rounded-md text-sm mr-3">Brisk Boost</span> 활동 유형 상세 가이드
                     </h3>
                     
-                    <ol class="list-decimal pl-6 space-y-5 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-                        <li>
-                            교과와 관련된 <strong>인터넷 뉴스 기사나 칼럼 페이지</strong>를 검색해서 열어둡니다. (예: 기후 변화 관련 네이버 뉴스, 사설 등)
-                        </li>
-                        <li>
-                            우측 하단 <span class="bg-black text-white px-2 py-0.5 rounded-full text-sm font-bold border-2 border-white shadow cursor-pointer">B</span> 아이콘 클릭 후, 첫 번째 메뉴인 <strong>[Create (만들기)]</strong>를 클릭합니다.
-                        </li>
-                        <li>
-                            이번에는 <strong>[Lesson Plan (수업계획안)]</strong> 이나 <strong>[Resource (학습 자료)]</strong>를 선택해 보세요.
-                        </li>
-                        <li>
-                            <span class="font-bold text-green-700 dark:text-green-400">프롬프트(명령어) 직접 추가하기:</span> 
-                            <p class="text-base mt-2 mb-2 text-gray-600 dark:text-gray-400">단순히 클릭만 하는 것을 넘어, 하단의 입력창(Add instructions...)에 선생님의 의도를 구체적으로 적어주면 결과가 훨씬 좋아집니다.</p>
-                            <div class="bg-gray-800 text-green-400 p-4 rounded-lg font-mono text-sm border border-gray-700">
-                                예시 입력: "이 기사를 바탕으로 고등학교 2학년 학생들이 비판적 사고력을 키울 수 있는 <strong>토론용 발제문 3개</strong>와 본문에 나온 <strong>어려운 한자어 어휘 정리표</strong>를 추가해서 만들어줘."
+                    <!-- Engage (참여) -->
+                    <div class="mb-8">
+                        <h4 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-l-4 border-blue-500 pl-3">Engage (참여 및 동기부발)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- 튜터 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-blue-500 text-white rounded p-1.5 mr-2">📘</div>
+                                    <h5 class="font-bold text-lg">튜터</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"학생 학습을 위한 맞춤형 지원"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: AI가 1:1 교사가 되어 정답을 바로 주지 않고 질문과 힌트를 통해 학생 스스로 깨우치도록 유도할 때 사용합니다.</p>
                             </div>
-                        </li>
-                        <li>파란색 <strong>[Brisk It]</strong> 버튼을 누르고 구글 문서에 예쁘게 정리되어 나오는 결과물을 확인합니다.</li>
-                    </ol>
-                </div>
-
-                <!-- STEP 4: Feedback -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-8 mb-8 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-2 h-full bg-purple-500"></div>
-                    <h3 class="text-2xl font-bold text-purple-800 dark:text-purple-400 mb-4 flex items-center">
-                        <span class="bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-300 px-3 py-1 rounded-lg mr-3 text-sm">Step 4</span> 
-                        [실습] 학생 글쓰기/수행평가 피드백 자동화 (최신)
-                    </h3>
-                    <p class="mb-4 text-gray-600 dark:text-gray-300 bg-purple-50 dark:bg-purple-900/20 p-3 rounded-md border border-purple-100 dark:border-purple-800/30">
-                        <i class="fas fa-lightbulb text-purple-500 mr-2"></i> 이 기능은 학생이 <strong>구글 문서(Google Docs)</strong>로 과제를 제출했을 때 강력하게 작동합니다. 특정 문단을 드래그해서 부분 피드백을 줄 수도 있습니다.
-                    </p>
-
-                    <ol class="list-decimal pl-6 space-y-5 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-                        <li>
-                            학생이 작성한 에세이, 탐구보고서 등이 적힌 <strong>구글 문서를 엽니다.</strong> (실습 시에는 인터넷에 있는 글을 빈 구글 문서에 복사해 놓고 진행해 보세요.)
-                        </li>
-                        <li>
-                            우측 하단 <span class="bg-black text-white px-2 py-0.5 rounded-full text-sm font-bold border-2 border-white shadow cursor-pointer">B</span> 아이콘 클릭 후, 이번에는 두 번째 메뉴인 <span class="bg-gray-100 dark:bg-slate-600 border border-gray-300 dark:border-slate-500 px-2 py-1 rounded font-bold text-black dark:text-white shadow-sm cursor-pointer"><i class="fas fa-comment-dots text-xs mr-1 text-purple-500"></i> Give Feedback (피드백 제공)</span>을 클릭합니다.
-                        </li>
-                        <li>
-                            <span class="font-bold text-gray-900 dark:text-white">4가지 피드백 모드 중 원하는 것을 선택합니다:</span>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-3 mb-2 text-base">
-                                <div class="border border-purple-200 dark:border-purple-800/50 p-4 rounded-xl bg-white dark:bg-slate-700 shadow-sm hover:shadow-md transition">
-                                    <strong class="text-purple-700 dark:text-purple-400 text-lg flex items-center mb-1"><i class="fas fa-bullseye mr-2"></i> Targeted (추천)</strong>
-                                    <span class="text-sm text-gray-600 dark:text-gray-400">문서 여백에 특정 문장이나 단어에 대한 구체적인 코멘트를 달아줍니다. (가장 꼼꼼함)</span>
+                            <!-- 화이트보드 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600 relative">
+                                <div class="absolute top-2 right-2 border border-blue-500 text-blue-500 text-xs font-bold px-1 rounded">NEW</div>
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-yellow-400 text-white rounded p-1.5 mr-2">🟨</div>
+                                    <h5 class="font-bold text-lg">화이트보드</h5>
                                 </div>
-                                <div class="border border-purple-200 dark:border-purple-800/50 p-4 rounded-xl bg-white dark:bg-slate-700 shadow-sm hover:shadow-md transition">
-                                    <strong class="text-purple-700 dark:text-purple-400 text-lg flex items-center mb-1"><i class="fas fa-seedling mr-2"></i> Glows & Grows</strong>
-                                    <span class="text-sm text-gray-600 dark:text-gray-400">잘한 점(Glow)과 개선할 점(Grow), 사고 확장 질문(Wonderings)을 부드러운 톤으로 분석합니다.</span>
-                                </div>
-                                <div class="border border-purple-200 dark:border-purple-800/50 p-4 rounded-xl bg-white dark:bg-slate-700 shadow-sm hover:shadow-md transition">
-                                    <strong class="text-purple-700 dark:text-purple-400 text-lg flex items-center mb-1"><i class="fas fa-tasks mr-2"></i> Rubric Criteria</strong>
-                                    <span class="text-sm text-gray-600 dark:text-gray-400">교사가 직접 입력하거나 업로드한 평가 기준(루브릭) 표를 바탕으로 도달도를 평가합니다.</span>
-                                </div>
-                                <div class="border border-purple-200 dark:border-purple-800/50 p-4 rounded-xl bg-white dark:bg-slate-700 shadow-sm hover:shadow-md transition">
-                                    <strong class="text-purple-700 dark:text-purple-400 text-lg flex items-center mb-1"><i class="fas fa-shoe-prints mr-2"></i> Next Steps</strong>
-                                    <span class="text-sm text-gray-600 dark:text-gray-400">학생이 다음 번 수정 시 구체적으로 어떤 행동을 해야 하는지 명확한 목록을 줍니다.</span>
-                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"화이트보드를 사용하여 학생들이 수업 내..."</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 텍스트를 넘어 마인드맵, 그림, 구조화된 다이어그램 등 시각적인 캔버스가 필요한 창의적 활동에 적합합니다.</p>
                             </div>
-                        </li>
-                        <li>
-                            피드백이 완성되면 문서 우측 <strong>댓글(Comments)창</strong>에 AI가 작성한 피드백이 초안 형태로 나타납니다. (교사가 승인해야 학생에게 보입니다.)
-                        </li>
-                        <li>
-                            <span class="font-bold text-red-500 dark:text-red-400"><i class="fas fa-star mr-1"></i> 꿀팁!</span> 팝업창 하단의 <span class="bg-gray-200 dark:bg-slate-600 text-gray-800 dark:text-white px-2 py-1 rounded text-sm font-bold shadow-sm border dark:border-slate-500 cursor-pointer">Insert (삽입)</span> 버튼을 누르면, 구글 문서 맨 아래에 예쁜 <strong>'표(Table)' 형태</strong>로 종합 피드백 결과가 깔끔하게 정리되어 문서 내에 들어갑니다.
-                        </li>
-                    </ol>
+                            <!-- 토론 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-blue-400 text-white rounded p-1.5 mr-2">🔨</div>
+                                    <h5 class="font-bold text-lg">토론</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"강력한 논거 구축하기"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 특정 주제에 대해 AI와 찬반 토론을 진행하며 논리력과 비판적 사고 능력을 기르도록 훈련시킵니다.</p>
+                            </div>
+                            <!-- 도입 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-green-500 text-white rounded p-1.5 mr-2">💡</div>
+                                    <h5 class="font-bold text-lg">도입</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"흥미를 유발하는 시나리오"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 본격적인 수업 전, 학생들의 이목을 끄는 흥미로운 딜레마나 상황(Hook)을 던져 동기를 부여합니다.</p>
+                            </div>
+                            <!-- 브레인스토밍 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-green-600 text-white rounded p-1.5 mr-2">🧠</div>
+                                    <h5 class="font-bold text-lg">브레인스토밍</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"즉각적인 새로운 아이디어 생성"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 프로젝트나 글쓰기 기획 단계에서 아이디어가 막혔을 때, AI가 확산적 사고를 돕도록 다양한 키워드를 던져줍니다.</p>
+                            </div>
+                            <!-- 캐릭터 채팅 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-emerald-500 text-white rounded p-1.5 mr-2">👤</div>
+                                    <h5 class="font-bold text-lg">캐릭터 채팅</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"역사적 인물과 대화하기"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 역사적 위인, 소설 속 주인공, 혹은 특정 직업군으로 AI의 페르소나를 설정하여 실감 나는 롤플레잉 학습을 진행합니다.</p>
+                            </div>
+                            <!-- 탐구 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-teal-500 text-white rounded p-1.5 mr-2">🔍</div>
+                                    <h5 class="font-bold text-lg">탐구</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"개념 탐구 및 가설 검증"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 과학 실험이나 사회 현상에 대해 학생 스스로 가설을 세우고, AI와 질의응답하며 원리를 파악해 나갑니다.</p>
+                            </div>
+                            <!-- 실생활 수학 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-green-400 text-white rounded p-1.5 mr-2">🧩</div>
+                                    <h5 class="font-bold text-lg">실생활 수학</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"수학 문장제 연습"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 추상적인 수식이 아닌 마트 계산, 여행 경비 등 일상생활과 접목된 수학 문제를 풀며 응용력을 기릅니다.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Assess (평가) -->
+                    <div class="mb-8">
+                        <h4 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-l-4 border-purple-500 pl-3">Assess (이해도 평가)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- 이해도 확인 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-purple-400 text-white rounded p-1.5 mr-2">✅</div>
+                                    <h5 class="font-bold text-lg">이해도 확인</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"수업 중 이해도 확인하기"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 수업 중간에 형성평가용 퀴즈를 던져 학생들이 개념을 제대로 따라오고 있는지 실시간으로 점검합니다.</p>
+                            </div>
+                            <!-- 출구 티켓 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-purple-500 text-white rounded p-1.5 mr-2">🎫</div>
+                                    <h5 class="font-bold text-lg">출구 티켓</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"수업 마지막에 학생들의 학습 내용을 평가하기"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 수업 종료 직전 오늘 배운 핵심 내용을 요약하게 하거나 질문을 남기게 하여 학습을 최종 정리합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Write (쓰기) -->
+                    <div>
+                        <h4 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 border-l-4 border-red-500 pl-3">Write (쓰기 및 목표 설정)</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- 글쓰기 코치 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-orange-500 text-white rounded p-1.5 mr-2">✍️</div>
+                                    <h5 class="font-bold text-lg">글쓰기 코치</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"맞춤형 글쓰기 지원입니다."</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 에세이나 보고서를 작성할 때 글의 구조, 어휘 선택, 문맥에 대해 AI가 실시간 첨삭 코치가 되어줍니다.</p>
+                            </div>
+                            <!-- 장점 & 성장 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-orange-400 text-white rounded p-1.5 mr-2">⭐</div>
+                                    <h5 class="font-bold text-lg">장점 & 성장</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"강점 및 개선 영역에 대한 피드백"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 학생 결과물에 대해 잘한 점(Glows)을 먼저 칭찬하고, 구체적으로 발전시킬 점(Grows)을 짚어 피드백합니다.</p>
+                            </div>
+                            <!-- 다음 단계 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-red-500 text-white rounded p-1.5 mr-2">📈</div>
+                                    <h5 class="font-bold text-lg">다음 단계</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"다음 단계에 대한 안내입니다."</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 과제 수행 중 막혔을 때, 학생이 포기하지 않도록 다음에 취해야 할 구체적인 스텝을 단계별로 안내합니다.</p>
+                            </div>
+                            <!-- 목표 설정 -->
+                            <div class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-sm border border-gray-200 dark:border-gray-600">
+                                <div class="flex items-center mb-2">
+                                    <div class="bg-red-400 text-white rounded p-1.5 mr-2">🎯</div>
+                                    <h5 class="font-bold text-lg">목표 설정</h5>
+                                </div>
+                                <p class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1">"목표를 설정하여 진도 관리하기"</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">💡 활용: 프로젝트 기획 단계에서 학생 스스로 도달해야 할 학습 목표를 명확히 세우고 진행 상황을 점검하도록 돕습니다.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 dark:bg-blue-900/30 p-6 rounded-xl border border-blue-200 dark:border-blue-800">
+                    <h3 class="text-lg font-bold mb-2">📲 모니터링 실습: 신호등 컬러의 이해</h3>
+                    <ul class="list-disc pl-6 space-y-2">
+                        <li>활동 생성 후 <strong>[QR코드]</strong>나 <strong>[링크 복사]</strong>로 학생들에게 배포합니다.</li>
+                        <li>교사 화면 대시보드에서는 학생의 상태가 직관적인 색상으로 표시됩니다.</li>
+                        <li><strong>빨간색:</strong> 참여 저조 또는 도움이 필요한 상태</li>
+                        <li><strong>노란색:</strong> 진행 중 상태</li>
+                        <li><strong>초록색:</strong> 활동 완료 및 목표 도달 상태</li>
+                    </ul>
                 </div>
             </section>
 
-            <!-- SECTION: SESSION 3 -->
-            <section id="session3" class="content-section max-w-5xl mx-auto p-6 md:p-10 fade-in hidden">
-                <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">3차시: 학생 참여형 AI 튜터, 부스트(Boost) 제작</h2>
-                <p class="text-gray-500 dark:text-gray-400 mb-8">단순한 자료 생성을 넘어, 학생이 직접 접속해서 지정된 자료로만 안전하게 상호작용하는 대화형 환경을 구축합니다.</p>
-
-                <!-- STEP 5: Brisk Boost -->
-                <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-100 dark:border-slate-700 p-8 mb-8 relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-2 h-full bg-orange-500"></div>
-                    <h3 class="text-2xl font-bold text-orange-800 dark:text-orange-400 mb-4 flex items-center">
-                        <span class="bg-orange-100 dark:bg-orange-900/50 text-orange-800 dark:text-orange-300 px-3 py-1 rounded-lg mr-3 text-sm">Step 5</span> 
-                        [실습] 교과 단원 맞춤형 'Boost' 만들고 배포하기
-                    </h3>
-                    <p class="mb-6 text-gray-700 dark:text-gray-300">Boost는 선생님이 지정한 소스(문서, 영상)에 대해서만 답하도록 통제된, <strong>가장 안전한 학생용 AI 튜터 및 활동 도구</strong>입니다.</p>
-
-                    <ol class="list-decimal pl-6 space-y-5 text-gray-700 dark:text-gray-300 text-lg leading-relaxed">
-                        <li>
-                            <span class="font-bold text-gray-900 dark:text-white">학습 소스 준비:</span> 1, 2차시에서 생성한 <strong>구글 문서(학습지)</strong>나 수업에 쓸 <strong>기사, 유튜브 영상</strong>을 화면에 띄웁니다.
-                        </li>
-                        <li>
-                            우측 하단 <span class="bg-black text-white px-2 py-0.5 rounded-full text-sm font-bold border-2 border-white shadow cursor-pointer">B</span> 아이콘 클릭 후, 메인 메뉴의 마지막에 있는 로켓 모양 아이콘의 <span class="bg-gray-100 dark:bg-slate-600 border border-gray-300 dark:border-slate-500 px-2 py-1 rounded font-bold text-black dark:text-white shadow-sm cursor-pointer"><i class="fas fa-rocket text-xs mr-1 text-orange-500"></i> Boost Student Activity</span>를 클릭합니다.
-                        </li>
-                        <li>
-                            <span class="font-bold text-gray-900 dark:text-white">활동 유형 선택:</span> 
-                            <ul class="list-disc pl-6 mt-2 space-y-3 text-base text-gray-600 dark:text-gray-300 bg-orange-50 dark:bg-orange-900/20 p-4 rounded-lg border border-orange-100 dark:border-orange-900/30">
-                                <li><strong>Chat with this document:</strong> 학생이 이 문서의 내용에 대해 AI에게 자유롭게 질문하고 답을 얻는 튜터 모드</li>
-                                <li><strong>Concept Check / Brainstorming:</strong> 핵심 개념을 확인하는 퀴즈를 내주거나 아이디어 확장을 돕는 모드</li>
-                            </ul>
-                        </li>
-                        <li>
-                            <span class="font-bold text-orange-700 dark:text-orange-400">가이드라인(역할) 부여:</span> 
-                            AI가 정답을 바로 알려주지 않도록 역할을 명확히 줍니다. (예: <em>"절대 정답을 바로 말하지 말고, 학생이 스스로 생각할 수 있도록 스무고개처럼 질문을 던져줘."</em>)
-                        </li>
-                        <li>
-                            <span class="font-bold text-gray-900 dark:text-white">학생 배포용 링크 생성:</span> 하단의 <span class="bg-orange-500 hover:bg-orange-600 text-white px-3 py-1.5 rounded-full text-sm shadow cursor-pointer font-bold transition-colors">Publish / Share</span> 버튼을 누르면 학생 접속용 긴 URL 링크가 복사됩니다.
-                        </li>
-                        <li>
-                            <span class="font-bold text-gray-900 dark:text-white">역할극 테스트 체험:</span> 생성된 링크를 <strong>새 인터넷 창(새 탭)</strong>에 붙여넣기 해보세요. 선생님이 <strong>'학생 입장'</strong>이 되어 AI와 대화해 봅니다. 일부러 오답을 입력해 보고 AI가 힌트를 주는지 확인해 보세요!
-                        </li>
-                    </ol>
-                    
-                    <div class="mt-8 p-6 bg-slate-800 dark:bg-slate-950 text-white rounded-xl shadow-inner border border-slate-700 dark:border-slate-800">
-                        <h4 class="font-bold text-orange-300 mb-3 text-lg flex items-center"><i class="fas fa-chart-pie mr-2 text-xl"></i> 실시간 대시보드 (Learning Insights)</h4>
-                        <p class="text-sm text-gray-300 leading-relaxed">
-                            Boost 활동 링크를 학생들에게 배포(구글 클래스룸, 패들렛 등)한 후, 선생님은 다시 Brisk 메뉴로 돌아와 <strong>대시보드(Insights)</strong>를 열어보세요. 어떤 학생이 접속했는지, 질문은 몇 번 주고받았는지, 최종 목표에 도달했는지 <strong>실시간으로 모니터링</strong> 하며 피드백을 줄 수 있습니다.
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION: TIPS & WRAP UP -->
-            <section id="tips" class="content-section max-w-5xl mx-auto p-6 md:p-10 fade-in hidden">
-                <h2 class="text-3xl font-bold text-gray-800 dark:text-white mb-2">💡 교실 현장 적용 핵심 팁 & 최신 기능</h2>
-                <p class="text-gray-500 dark:text-gray-400 mb-8">연수를 마치며, 실제 교실에서 Brisk를 200% 활용하기 위한 꿀팁을 알아봅니다.</p>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Tip 1 -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 hover:-translate-y-1 transition-transform duration-300">
-                        <div class="bg-red-100 dark:bg-red-900/50 w-12 h-12 rounded-full flex items-center justify-center text-red-600 dark:text-red-400 mb-4 text-xl">
-                            <i class="fas fa-search-plus"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">강력한 신기능: 글쓰기 점검(Inspect)</h3>
-                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
-                            메인 메뉴 중 <span class="font-bold text-red-600 dark:text-red-400">Inspect Writing</span> 기능은 학생이 구글 문서에 글을 작성한 과정을 마치 동영상처럼 <strong>재생(Replay)</strong>해 줍니다. 
-                            어디서 외부 텍스트를 복사/붙여넣기 했는지, 비정상적으로 한 번에 많은 텍스트가 생성되었는지 시각적으로 파악할 수 있어 <strong>과정 중심 수행평가 검증</strong>에 매우 강력한 도구입니다.
-                        </p>
-                    </div>
-
-                    <!-- Tip 2 -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 hover:-translate-y-1 transition-transform duration-300">
-                        <div class="bg-yellow-100 dark:bg-yellow-900/50 w-12 h-12 rounded-full flex items-center justify-center text-yellow-600 dark:text-yellow-400 mb-4 text-xl">
-                            <i class="fas fa-language"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">한국어 프롬프트 필수 설정</h3>
-                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
-                            Brisk 실행창 하단을 보면 'Language' 설정이 있습니다. 이를 반드시 <strong>'Korean(한국어)'</strong>으로 고정해 두세요. 별도의 번역 과정을 거치지 않아도 양질의 한국어 발문과 존댓말/반말 톤까지 교육 현장에 맞게 적절히 조절된 결과물이 출력됩니다.
-                        </p>
-                    </div>
-                    
-                    <!-- Tip 3 -->
-                    <div class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-gray-200 dark:border-slate-700 hover:-translate-y-1 transition-transform duration-300 md:col-span-2">
-                        <div class="bg-blue-100 dark:bg-blue-900/50 w-12 h-12 rounded-full flex items-center justify-center text-blue-600 dark:text-blue-400 mb-4 text-xl">
-                            <i class="fas fa-clipboard-check"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800 dark:text-white mb-2">교사의 '교차 검증'은 필수</h3>
-                        <p class="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
-                            Brisk가 아무리 훌륭한 퀴즈와 피드백을 만들어 내더라도, 생성형 AI의 특성상 환각(Hallucination, 거짓 정보를 사실처럼 말함) 현상이 있을 수 있습니다. 
-                            생성된 자료를 그대로 학생들에게 배포하기 전, <strong>반드시 선생님의 교과 전문성을 바탕으로 정답과 해설, 문맥을 한 번 더 읽어보고(Human in the loop) 수정 후 활용</strong>하시기 바랍니다.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="mt-12 text-center p-8 bg-gradient-to-r from-indigo-900 to-indigo-800 dark:from-slate-900 dark:to-indigo-950 text-white rounded-2xl shadow-lg border border-indigo-700 dark:border-slate-700">
-                    <h2 class="text-2xl font-bold mb-4">수고하셨습니다! 🎉</h2>
-                    <p class="text-indigo-200 dark:text-indigo-300 text-lg">
-                        이제 선생님의 브라우저에는 든든한 AI 보조 교사가 상주하고 있습니다. <br>
-                        오늘 배운 기능을 바탕으로 선생님만의 멋진 수업을 디자인해 보세요!
-                    </p>
-                </div>
-            </section>
         </main>
     </div>
 
     <script>
-        // Default section to show on load
-        const defaultSection = 'intro';
-
-        function showSection(sectionId) {
-            // 1. Hide all content sections
-            const sections = document.querySelectorAll('.content-section');
-            sections.forEach(section => {
+        // 메뉴 클릭 시 화면 전환 스크립트
+        function showContent(sectionId, element) {
+            document.querySelectorAll('.content-section').forEach(section => {
                 section.classList.add('hidden');
             });
-
-            // 2. Remove active styling from all nav buttons
-            const navBtns = document.querySelectorAll('.nav-btn');
-            navBtns.forEach(btn => {
-                btn.classList.remove('bg-indigo-700', 'border-l-4', 'border-yellow-400', 'dark:bg-slate-700', 'text-white');
-                btn.classList.add('hover:bg-indigo-700', 'dark:hover:bg-slate-700', 'text-indigo-200', 'dark:text-slate-300');
+            document.querySelectorAll('.menu-item').forEach(item => {
+                item.classList.remove('active');
             });
-
-            // 3. Show the selected section
-            const targetSection = document.getElementById(sectionId);
-            if(targetSection) {
-                targetSection.classList.remove('hidden');
-                // Scroll to top of main content
-                document.getElementById('main-content').scrollTop = 0;
-            }
-
-            // 4. Add active styling to the clicked button
-            const activeBtn = document.getElementById('btn-' + sectionId);
-            if(activeBtn) {
-                activeBtn.classList.remove('hover:bg-indigo-700', 'dark:hover:bg-slate-700', 'text-indigo-200', 'dark:text-slate-300');
-                activeBtn.classList.add('bg-indigo-700', 'dark:bg-slate-700', 'border-l-4', 'border-yellow-400', 'text-white');
-            }
-
-            // 5. On mobile, close the sidebar after clicking a link
-            if (window.innerWidth < 768) {
-                const sidebar = document.getElementById('sidebar');
-                sidebar.classList.add('mobile-menu-closed');
-                sidebar.classList.remove('mobile-menu-open');
-            }
-        }
-
-        // Initialize mobile menu toggle
-        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
-            const sidebar = document.getElementById('sidebar');
-            if (sidebar.classList.contains('mobile-menu-closed')) {
-                sidebar.classList.remove('mobile-menu-closed');
-                sidebar.classList.add('mobile-menu-open');
-            } else {
-                sidebar.classList.add('mobile-menu-closed');
-                sidebar.classList.remove('mobile-menu-open');
-            }
-        });
-
-        // Theme Toggle Logic
-        const htmlElement = document.documentElement;
-        const themeToggleBtns = document.querySelectorAll('.theme-toggle-btn');
-        
-        function updateThemeUI(theme) {
-            const icons = document.querySelectorAll('.theme-icon-fa');
-            const textLabels = document.querySelectorAll('.theme-toggle-text');
             
-            icons.forEach(icon => {
-                if (theme === 'dark') {
-                    icon.classList.remove('fa-moon');
-                    icon.classList.add('fa-sun');
-                } else {
-                    icon.classList.remove('fa-sun');
-                    icon.classList.add('fa-moon');
-                }
-            });
-
-            textLabels.forEach(label => {
-                label.textContent = theme === 'dark' ? '라이트 모드 켜기' : '다크 모드 켜기';
-            });
+            document.getElementById(sectionId).classList.remove('hidden');
+            element.classList.add('active');
         }
 
-        function toggleTheme() {
+        // 다크/라이트 모드 토글 스크립트
+        const themeToggleBtn = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const htmlElement = document.documentElement;
+
+        themeToggleBtn.addEventListener('click', () => {
             if (htmlElement.classList.contains('dark')) {
                 htmlElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-                updateThemeUI('light');
+                htmlElement.classList.add('light');
+                themeIcon.textContent = '🌙 다크모드';
             } else {
+                htmlElement.classList.remove('light');
                 htmlElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-                updateThemeUI('dark');
+                themeIcon.textContent = '☀️ 라이트모드';
             }
-        }
-
-        // Attach event listeners to all theme toggle buttons
-        themeToggleBtns.forEach(btn => {
-            btn.addEventListener('click', toggleTheme);
         });
-
-        // Initialize everything on page load
-        window.onload = () => {
-            // Check system/local storage theme preference
-            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                htmlElement.classList.add('dark');
-                updateThemeUI('dark');
-            } else {
-                htmlElement.classList.remove('dark');
-                updateThemeUI('light');
-            }
-
-            // Show default section
-            showSection(defaultSection);
-        };
     </script>
 </body>
 </html>
